@@ -6,6 +6,11 @@ logger("scheduler has been started");
 const tasks = new Map();
 
 function scheduleTask(name, interval, task) {
+  if (tasks.has(name)) {
+    logger(`task "${name}" is already scheduled`);
+    return;
+  }
+
   logger(`scheduling task: ${name} every ${interval}ms`);
   
   const id = setInterval(() => {
