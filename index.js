@@ -4,10 +4,12 @@ const { scheduleTask, stopTask } = require('./scheduler');
 const createLogger = require('./logger');
 const logger = createLogger();
 
-const taskId = scheduleTask("logRunningMessage", settings.intervalDefault, () => {
+const TASK_NAME = "logRunningMessage";
+
+const taskId = scheduleTask(TASK_NAME, settings.intervalDefault, () => {
   logger("running");
 });
 
 setTimeout(() => {
-  stopTask(taskId);
+  stopTask(TASK_NAME);
 }, settings.stopAfter);

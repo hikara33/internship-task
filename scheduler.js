@@ -3,22 +3,35 @@ const logger = createLogger();
 
 logger("scheduler has been started");
 
-const tasks = [];
+const tasks = new Map();
 
 function scheduleTask(name, interval, task) {
-  logger(`Scheduling task: ${name} every ${interval}ms`);
+  logger(`scheduling task: ${name} every ${interval}ms`);
   
   const id = setInterval(() => {
-    task();
+    try {
+      task();
+    } catch (err) {
+      logger(`error in task "${name}": ${err.message}`);
+    }
   }, interval);
 
-  tasks.push({ name, id });
+  tasks.set(name, id);
   return id;
 }
 
-function stopTask(id) {
+function stopTask(name) {
+  const id = tasks.get(name);
+
+  if (!id) {
+    logger(`task "${name}" not found`);
+    return;
+  }
+
   clearInterval(id);
-  logger(`Stopped task with id: ${id}`);
+  tasks.delete(name);
+
+  logger(`task "${name}" stopped`);
 }
 
 module.exports = {
